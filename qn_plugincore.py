@@ -177,3 +177,10 @@ class GetPropertiesCommandHelper(BaseCommand):
                 if isinstance(item, dict) and "name" in item:
                     vec.append(item["name"])
         return vec
+
+def register(cmd_name):
+    def decorator(cls):
+        create_func = lambda: cls()
+        RegisterAction(cmd_name, create_func)
+        return cls
+    return decorator

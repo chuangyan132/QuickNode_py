@@ -12,6 +12,7 @@
 import json
 from qn_BasicType import *
 from qn_ErroType import *
+from PyQt5.QtWidgets import QMessageBox
 
 class BaseNode:
     def __init__(self):
@@ -43,9 +44,9 @@ class BaseNode:
     def setProperty(self, data):
         try:
             root = json.loads(data)
-            if root and isinstance(root, dict) and "properties" in root and isinstance(root["properties"], list):
-                for arrayElement in root["properties"]:
-                    if isinstance(arrayElement, dict) and "name" in arrayElement:
+            if root and "data" in root and "properties" in root["data"] and isinstance(root["data"]["properties"], list):
+                for arrayElement in root["data"]["properties"]:
+                    if "name" in arrayElement:
                         propertyName = arrayElement["name"]
                         # If name exists, replace value; else, add new property
                         self.m_properties[propertyName] = json.dumps(arrayElement, indent=4)
@@ -99,3 +100,13 @@ class BaseNode:
 
     def _property(self, name):
         return self.m_properties.get(name, "")
+
+    def check_value(self, value):
+        if not 0 <= value <= 100:
+            alert = QMessageBox()
+            alert.setWindowTitle('Value Error')
+            alert.setText('The value is out of range. Please set a correct value between 0 and 100.')
+            alert.exec_()
+            return 1
+        else:
+            return 0
